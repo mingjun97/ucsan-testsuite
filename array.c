@@ -1,4 +1,4 @@
-int cal(int* payload, unsigned int length){
+int cal(unsigned int* payload, unsigned int length){
     unsigned int sum = 0;
     for(int i = 0; i < length; i++) {
         sum += payload[i];
@@ -14,5 +14,5 @@ int cal(int* payload, unsigned int length){
 }
 
 int main(){
- cal((void*)1,1);
+    printf("sum = %d\n" , cal((void*)0,0));
 }

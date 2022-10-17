@@ -11,7 +11,7 @@ def pretty_print(*args, **kwargs):
     # print(*args, **kwargs)
     for idx, b in enumerate(args[0]):
         if idx % 16 == 0:
-            print(f"{idx//16:08x}:\t", end="")
+            print(f"\n{idx//16:08x}:\t", end="")
         print(f"{b:02x}",end="")
         if (idx + 1) % 2 == 0:
             print(" ", end="")

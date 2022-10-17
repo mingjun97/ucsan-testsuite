@@ -3,3 +3,4 @@ outputs
 binary
 *.ll
 .z3-trace
+id-*

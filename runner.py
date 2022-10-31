@@ -25,8 +25,8 @@ def main():
             os.putenv("TAINT_OPTIONS", f"debug=1 output_dir={out_dir} taint_file={iv}")
         else:
             os.putenv("TAINT_OPTIONS", f"debug=1 output_dir={out_dir}")
-        os.system(binary)
-        input("[*]Press enter to continue...")
+        ret = os.system(binary)
+        input(f"[*]ret={ret},Press enter to continue...")
         os.system(f"python3 display.py {out_dir}")
         for seed in os.listdir(out_dir):
             r = re.match('id-\d+-\d+-', seed)

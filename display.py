@@ -4,8 +4,12 @@ import struct
 
 path = sys.argv[1]
 
-files = os.listdir(path)
-files.sort()
+if (os.path.isdir(path)):
+    files = os.listdir(path)
+    files.sort(key=lambda x: int(x.split('-')[-1]))
+else:
+    files = [path.split('/')[-1]]
+    path = '/'.join(path.split('/')[:-1])
 
 def pretty_print(*args, **kwargs):
     # print(*args, **kwargs)

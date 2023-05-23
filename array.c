@@ -13,6 +13,6 @@ int cal(unsigned int* payload, unsigned int length){
     return sum;
 }
 
-int main(){
-    printf("sum = %d\n" , cal((void*)0,0));
-}
+// int main(){
+//     printf("sum = %d\n" , cal((void*)0,0));
+// }

@@ -3,12 +3,21 @@ entry: cal
 scope:
   - foo
 */
+
+struct d{int f1; struct d* f2;};
+
+
+_Bool external(){
+    return 0;
+}
+
 struct node
 {
-  // char padding[10];
+  char padding[10];
   unsigned int v;
   // int v1;
   struct node* next;
+  struct d d;
 };
 
 int *return_ptr(int *a) {
@@ -26,8 +35,16 @@ int foo(int a) {
 
 
 int cal(struct node* head) {
+  return_ptr((int*)&head->d.f1);
+
   int sum = 0, *p_sum = &sum;
   sum += head->v;
+
+  if (external()) {
+    printf("Bad1\n");
+    __builtin_trap();
+  }
+
   if (foo(sum) > 10) {
     printf("Bad2\n");
     __builtin_trap();

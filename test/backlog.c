@@ -1,3 +1,4 @@
+// METADATA: backlog.yaml
 #include <stdio.h>
 
 enum engine_status {

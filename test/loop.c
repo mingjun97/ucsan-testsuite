@@ -1,3 +1,4 @@
+// METADATA: note.yaml
 extern int a;
 int* b = &a;
 int cal(unsigned int* arr) {

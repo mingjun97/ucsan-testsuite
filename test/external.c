@@ -1,3 +1,4 @@
+// METADATA: note.yaml
 /* METADATA.yaml
 entry: cal
 scope:

@@ -1,3 +1,5 @@
+// METADATA: note.yaml
+// ENV: KO_CHECKER_UBI
 struct s{
     int a;
     int b;

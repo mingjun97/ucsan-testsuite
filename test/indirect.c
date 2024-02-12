@@ -1,3 +1,5 @@
+// METADATA: note.yaml
+// ENV: KO_WRAP_INDIRECT_CALL
 /* METADATA.yaml
 entry: cal
 scope:

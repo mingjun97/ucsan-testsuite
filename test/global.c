@@ -1,3 +1,5 @@
+// METADATA: note.yaml
+// ENV: KO_WRAP_INDIRECT_CALL
 static int a;
 static int *b;
 static struct {

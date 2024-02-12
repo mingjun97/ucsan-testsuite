@@ -1,3 +1,4 @@
+// METADATA: note.yaml
 int cal(int *a, int b) {
     int x = 500, y = 200, z;
 

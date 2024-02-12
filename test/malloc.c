@@ -1,3 +1,4 @@
+// METADATA: note.yaml
 int cal(unsigned int* payload, unsigned int length){
     unsigned int* sum = malloc(sizeof(unsigned int));
     printf("ptr = %p\n", sum);

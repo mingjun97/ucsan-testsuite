@@ -3,6 +3,7 @@ build_folder = "../build"
 import subprocess
 import os
 import sys
+import glob
 
 common_env = {
     "KO_CC": "clang-12", 
@@ -10,23 +11,18 @@ common_env = {
     "KO_USE_THOROUPY": "1",
     "KO_TRACE_BB": "1",
 }
-tests = [
-    # [test_name, metadata_file, ...additional env vars...]
-    ['global', 'note.yaml', 'KO_WRAP_INDIRECT_CALL'],
-    ['linklist', 'note.yaml'],
-    ['external', 'note.yaml'],
-    ['array', 'note.yaml'],
-    ['malloc', 'note.yaml'],
-    ['struct', 'struct.yaml'],
-    ['backlog', 'backlog.yaml'],
-    ['indirect', 'note.yaml', 'KO_WRAP_INDIRECT_CALL'],
-    ['pseudo_pointer', 'note.yaml'],
-    ['container_of', 'note.yaml'],
-    ['loop', 'note.yaml'],
-    ['asm', 'note.yaml'],
-    ['ubi', 'note.yaml', "KO_CHECKER_UBI"],
-]
+tests = []
 
+for file in glob.glob("test/*.c"):
+    test = [file.replace("test/","")[:-2], ""]
+    c = open(file,"r").readlines()
+    for line in c:
+        if line.startswith("// METADATA:"):
+            test[1] = line.split(":", maxsplit=2)[1].strip()
+        elif line.startswith("// ENV:"):
+            test.extend(line.split(":", maxsplit=2)[1].strip().split(" "))
+    tests.append(test)
+    
 ko_lang = f"{build_folder}/bin/ko-clang -fno-discard-value-names"
 
 GREEN = "\033[32m"

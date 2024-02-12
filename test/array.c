@@ -1,3 +1,4 @@
+// METADATA: note.yaml
 int cal(unsigned int* payload, unsigned int length){
     unsigned int sum = 0;
     for(int i = 0; i < length; i++) {

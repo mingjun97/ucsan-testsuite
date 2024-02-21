@@ -14,7 +14,8 @@ common_env = {
     "KO_CC": "clang-12", 
     "KO_DONT_OPTIMIZE": "1",
     "KO_USE_THOROUPY": "1",
-    "KO_TRACE_BB": "1",
+    # "KO_TRACE_BB": "1",
+    "KO_RESIGN_PTRARGS": "1",
 }
 
 ucsan_config = {
@@ -122,7 +123,7 @@ def perform_test(stage, *args):
                 raise Exception(f"Flag {flag[0]} not triggered")
         stage.set_value(f'Passed({message})')
     else:
-        stage.set_value('Passed')
+        stage.set_value('Passed(Compile only)')
 
 if __name__ == "__main__":
     target = None

@@ -1,4 +1,5 @@
 // METADATA: struct.yaml
+//-- FLAG: 200
 typedef struct {
     unsigned long long field1;
     unsigned long long field2;
@@ -15,7 +16,7 @@ int wrapper(int a, int b){
     Ret ret = func(a, b);
     int c = ret.field1 + ret.field2;
     if (c > 10) {
-        __builtin_trap();
+        exit(200);
     }
     return c;
 }

@@ -1,4 +1,5 @@
 // METADATA: note.yaml
+// FLAG: 200
 typedef enum { false, true } bool;
 bool external(){
     return false;
@@ -6,6 +7,6 @@ bool external(){
 
 int cal(int a, int b) {
     if (external()){
-        __builtin_trap();
+        exit(200);
     }
 }

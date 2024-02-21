@@ -1,9 +1,5 @@
 // METADATA: note.yaml
-/* METADATA.yaml
-entry: cal
-scope:
-  - foo
-*/
+// FLAG: 200
 struct node
 {
   // char padding[10];
@@ -35,21 +31,8 @@ int cal(struct node* head) {
   }
   if (sum > 100) {
     if (sum > 200) {
-      printf("Bad1\n");
-      __builtin_trap();
+      exit(200);
     }
   }
   return sum;
-}
-
-
-int main() {
-  struct node* head = 0;
-  // int* tail = malloc(sizeof(int));
-  // *tail = 100;
-  //assign label for the first arg
-  // dfsan_set_label_for_args(0);
-  int r = cal(head);
-  printf("sum is %d\n",r);
-  return 0;
 }

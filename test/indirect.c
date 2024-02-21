@@ -1,10 +1,6 @@
 // METADATA: note.yaml
+// FLAG: 200
 // ENV: KO_WRAP_INDIRECT_CALL
-/* METADATA.yaml
-entry: cal
-scope:
-  - foo
-*/
 
 int cal(int (*a)(int, int*)) {
   int sum = 0;
@@ -12,14 +8,7 @@ int cal(int (*a)(int, int*)) {
     __builtin_trap();
   }
   if (a(sum, &sum) > 1) {
-    printf("bad\n");
-    __builtin_trap();
+    exit(200);
   };
   return sum;
-}
-
-
-int main() {
-  int r = cal(0);
-  return 0;
 }

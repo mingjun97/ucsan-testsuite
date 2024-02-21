@@ -1,9 +1,5 @@
 // METADATA: note.yaml
-/* METADATA.yaml
-entry: cal
-scope:
-  - foo
-*/
+// FLAG: 200
 
 struct s {
     int a;
@@ -25,18 +21,10 @@ int cal(int *b) {
   if (s->a == 0xdeadbeef) {
     char * a = s->padding;
     if (a[0] == 'a') {
-      printf("bad2\n");
+        exit(200);
       __builtin_trap();
     }
 
-    printf("bad\n");
     // __builtin_trap();
   }
-
-
-}
-
-int main() {
-  int r = cal(0);
-  return 0;
 }

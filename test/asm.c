@@ -1,4 +1,5 @@
 // METADATA: note.yaml
+//-- FLAG: 200
 int cal(int *a, int b) {
     int x = 500, y = 200, z;
 
@@ -10,6 +11,7 @@ int cal(int *a, int b) {
     );
 
     if (z == 700)
-        __builtin_trap();
+        exit(200);
+
     return 0;
 }

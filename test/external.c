@@ -1,9 +1,6 @@
 // METADATA: note.yaml
-/* METADATA.yaml
-entry: cal
-scope:
-  - foo
-*/
+// FLAG: 200 201 202 203 204
+
 
 struct d{int f1; struct d* f2;};
 
@@ -42,25 +39,25 @@ int cal(struct node* head) {
   sum += head->v;
 
   if (external()) {
-    printf("Bad1\n");
+    exit(200);
     __builtin_trap();
   }
 
   if (foo(sum) > 10) {
-    printf("Bad2\n");
+    exit(201);
     __builtin_trap();
   }
   if (*bar(&sum, 0) > 66) {
-    printf("Bad3\n");
+    exit(202);
     __builtin_trap();
   }
     if (sum > 1024) {
-    printf("Bad6\n");
+    exit(203);
     __builtin_trap();
   }
   bar(p_sum, 0);
   if (sum > 404) {
-    printf("Bad4\n");
+    exit(204);
     __builtin_trap();
   }
   return sum;

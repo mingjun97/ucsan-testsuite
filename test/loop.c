@@ -1,4 +1,5 @@
 // METADATA: note.yaml
+// FLAG: 123 200 201
 extern int a;
 int* b = &a;
 int cal(unsigned int* arr) {
@@ -8,15 +9,19 @@ int cal(unsigned int* arr) {
     unsigned int i = 0;
     unsigned int sum = 0;
     while (arr[i] != 0xbb) {
-        if (arr[i] > 6) {
-            break;
-        }
+        if (arr[i] > 6) goto next;
         sum += arr[i];
+next:
         i++;
     }
     if (i < 6 && sum == 0x1e) {
-        printf("Bad1: i = %d\n", i);
-        __builtin_trap();
+         exit(200);
+    }
+    if (i == 7 && sum == 0x1e) {
+         exit(201);
+    }
+    if (i == 11 && sum == 0x1e) {
+         exit(202);
     }
     return sum;
 }

@@ -2,3 +2,4 @@ entry: cal
 scope:
   - foo
   - printf
+  - exit

@@ -8,8 +8,6 @@ import argparse
 
 import logging
 
-# logging.basicConfig(level = logging.DEBUG ,format = '[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s')
-
 common_env = {
     "KO_CC": "clang-12", 
     "KO_DONT_OPTIMIZE": "1",
@@ -127,14 +125,39 @@ def perform_test(stage, *args):
 
 if __name__ == "__main__":
     target = None
-    if len(sys.argv) > 1:
-        if sys.argv[1] == 'test':
-            target = sys.argv[2]
-        elif sys.argv[1] == 'clean':
-            run("rm -rf ll binary", cwd=".")
-            sys.exit(0)
-        else:
-            build_folder = sys.argv[1]
+    args = argparse.ArgumentParser()
+    args.add_argument("-p", help="The build folder", default="../build")
+    args.add_argument("-v", help="Verbose", action="store_true")
+    sub_parser = args.add_subparsers(title="tools")
+    parser_test = sub_parser.add_parser("test", help="Run specific tests")
+    parser_test.add_argument("test_name", help="The name of the test")
+    parser_test.add_argument("-v", help="Verbose", action="store_true")
+    
+    parser_clean = sub_parser.add_parser("clean", help="Clean up the test environment")
+    parser_clean.set_defaults(func=lambda: run("rm -rf ll binary", cwd=".") & os._exit(0) )
+
+    def show_test():
+        print("Available tests:\n\n\t", end="")
+        print("\n\t".join([test[0] for test in tests]))
+        print("")
+        parser_test.print_help()
+        os._exit(0)
+    parser_list = sub_parser.add_parser("list", help="List all tests")
+    parser_list.set_defaults(func=show_test)
+    
+    args = args.parse_args()
+
+    build_folder = args.p if args.p else build_folder
+    if args.v:
+        logging.basicConfig(level = logging.DEBUG ,format = '[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s')
+    
+    if 'func' in args:
+        args.func()
+
+    if 'test_name' in args:
+        target = args.test_name
+    else:
+        target = None
 
     run("make -j")
     run("make install")

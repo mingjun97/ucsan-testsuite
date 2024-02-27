@@ -25,6 +25,9 @@ ucsan_config = {
       "always_true": False
     }
   }, 
+  "handler": {
+    "ubi_handler": {}  
+  },
   "scheduler": {
     "fifo": {
       "checksum": True
@@ -127,11 +130,13 @@ if __name__ == "__main__":
     target = None
     args = argparse.ArgumentParser()
     args.add_argument("-p", help="The build folder", default="../build")
-    args.add_argument("-v", help="Verbose", action="store_true")
+    args.add_argument("-v", '--verbose', help="Verbose", action="count", default=0)
+    args.add_argument("-s", help="Stop immediately on error", action="store_true")
+    args.add_argument("-f", "--file", help="Write log to file")
     sub_parser = args.add_subparsers(title="tools")
     parser_test = sub_parser.add_parser("test", help="Run specific tests")
     parser_test.add_argument("test_name", help="The name of the test")
-    parser_test.add_argument("-v", help="Verbose", action="store_true")
+    parser_test.add_argument("-v", '--verbose', help="Verbose", action="count", default=0)
     
     parser_clean = sub_parser.add_parser("clean", help="Clean up the test environment")
     parser_clean.set_defaults(func=lambda: run("rm -rf ll binary", cwd=".") & os._exit(0) )
@@ -148,8 +153,16 @@ if __name__ == "__main__":
     args = args.parse_args()
 
     build_folder = args.p if args.p else build_folder
-    if args.v:
-        logging.basicConfig(level = logging.DEBUG ,format = '[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s')
+
+    levels = [logging.WARNING, logging.INFO, logging.DEBUG]
+    level = levels[min(args.verbose, len(levels) - 1)]  # cap to last level index
+
+    logging.basicConfig(level = level ,format = '[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s')
+    
+    if args.file:
+        fh = logging.FileHandler(args.file)
+        fh.setLevel(level)
+        logging.getLogger().addHandler(fh)
     
     if 'func' in args:
         args.func()
@@ -176,9 +189,12 @@ if __name__ == "__main__":
         try:
             perform_test(stage, *test)
             tasks.append((test[0], colored(GREEN, stage.get())))
-        except:
+        except Exception as e:
+            logging.exception(e)
             errors += 1
             tasks.append((test[0], colored(RED, "Failed") + f"({stage.get()})"))
+            if args.s:
+                break
         
     print("\n\nTest results:")
     for task in tasks:

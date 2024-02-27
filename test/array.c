@@ -2,6 +2,7 @@
 // FLAG: 200
 int cal(unsigned int* payload, unsigned int length){
     unsigned int sum = 0;
+    if (length > 9) return 0;
     for(int i = 0; i < length; i++) {
         sum += payload[i];
         if (payload[i] > 51) return 0;

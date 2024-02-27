@@ -1,6 +1,6 @@
 // METADATA: note.yaml
 // ENV: KO_CHECKER_UBI
-// FLAG: 150,3
+// FLAG: 150,4
 struct s{
     int a;
     int b;
@@ -13,7 +13,12 @@ int unused(int *p) {
 int cal(int branch){
     int *p;
     int a, b, c;
-    int d = 233, e;
+    int d = 233;
+    long e;
+    if (branch == 3) {
+        unused((int*)e); // UBI should triggered
+        return 0;
+    }
     if (branch == 2) {
         p = &e;
         if (e + branch){ // UBI should triggered

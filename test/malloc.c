@@ -1,20 +1,20 @@
 // METADATA: note.yaml
-// FLAG" 200
+// FLAG: 152,2 151
+// ENV: trace_bounds
+void * custom_malloc(unsigned long size) {
+    return (void *)0xaaaaaaaa;
+}
+
 int cal(unsigned int* payload, unsigned int length){
     unsigned int* sum = malloc(sizeof(unsigned int));
-    if (sum != 0xdeadbeef) {
-        exit(0);
-        // exit(128);
+    if(*payload == 1) {
+        sum[0] = 0; // Not OOB
+        sum[1] = 1; // OOB 152
+        sum[-1] = 1; // OOB 152
     }
-    for(int i = 0; i < length; i++) {
-        *sum += payload[i];
-        if (payload[i] > 51) return 0;
+    if (*payload == 2) {
+        free(sum);
+        sum[0] = 1; // UAF
     }
-    if (*sum > 100){
-        if (*sum > 200) {
-            exit(200);
-        }
-    }
-
     return *sum;
 }

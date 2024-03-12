@@ -26,7 +26,9 @@ ucsan_config = {
     }
   }, 
   "handler": {
-    "ubi_handler": {}  
+    "ubi_handler": {},  
+    "objtrace_handler": {},
+    "forward_handler": {}
   },
   "scheduler": {
     "fifo": {
@@ -89,8 +91,10 @@ def perform_test(stage, *args):
     flags = args[2]
 
     env['METADATA'] = "metadata/" + metafile
+    options = {}
     for arg in args[3:]:
-        env[arg] = "1"
+        options[arg] = "1"
+    env.update(options)
     run(f"{ko_lang} -g -S -emit-llvm -o ll/{test_name}.ll test/{test_name}.c", cwd=".", env=env)
     run(f"{ko_lang} -g -o binary/{test_name}.ucsan test/{test_name}.c", cwd=".", env=env)
     stage.set_value('Compiled')
@@ -98,7 +102,7 @@ def perform_test(stage, *args):
         triggered = {}
         for flag in flags:
             triggered[flag[0]] = 0
-        m = UcsanManager(f'binary/{test_name}.ucsan', config=ucsan_config, terminate=False)
+        m = UcsanManager(f'binary/{test_name}.ucsan', config=ucsan_config, terminate=False, env=options)
         m.run()
         for exit_status in m.exit_status:
             if exit_status > 255:

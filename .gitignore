@@ -4,3 +4,4 @@ binary
 *.ll
 .z3-trace
 id-*
+*.seed

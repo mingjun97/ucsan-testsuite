@@ -1,5 +1,5 @@
 // METADATA: note.yaml
-// FLAG: 152,2 151
+// FLAG: 152,1 151,1
 // ENV: trace_bounds
 void * custom_malloc(unsigned long size) {
     return (void *)0xaaaaaaaa;

@@ -13,7 +13,7 @@ common_env = {
     "KO_DONT_OPTIMIZE": "1",
     "KO_USE_THOROUPY": "1",
     # "KO_TRACE_BB": "1",
-    "KO_RESIGN_PTRARGS": "1",
+    # "KO_RESIGN_PTRARGS": "1",
 }
 
 ucsan_config = {
@@ -42,6 +42,9 @@ tests = []
 sys.path.append('../thoroupy')
 
 from manager import UcsanManager
+from utils.process import populate_gdb
+
+adapter = None
 
 for file in glob.glob("test/*.c"):
     test = [file.replace("test/","")[:-2], "", []]
@@ -102,7 +105,7 @@ def perform_test(stage, *args):
         triggered = {}
         for flag in flags:
             triggered[flag[0]] = 0
-        m = UcsanManager(f'binary/{test_name}.ucsan', config=ucsan_config, terminate=False, env=options)
+        m = UcsanManager(f'binary/{test_name}.ucsan', config=ucsan_config, terminate=False, env=options, adapter=adapter)
         m.run()
         for exit_status in m.exit_status:
             if exit_status > 255:
@@ -141,6 +144,7 @@ if __name__ == "__main__":
     parser_test = sub_parser.add_parser("test", help="Run specific tests")
     parser_test.add_argument("test_name", help="The name of the test")
     parser_test.add_argument("-v", '--verbose', help="Verbose", action="count", default=0)
+    parser_test.add_argument("-g", '--debug', help="Debug", action="store_true", default=False)
     
     parser_clean = sub_parser.add_parser("clean", help="Clean up the test environment")
     parser_clean.set_defaults(func=lambda: run("rm -rf ll binary", cwd=".") & os._exit(0) )
@@ -175,6 +179,8 @@ if __name__ == "__main__":
         target = args.test_name
     else:
         target = None
+    if 'debug' in args and args.debug:
+        adapter = populate_gdb
 
     run("make -j")
     run("make install")

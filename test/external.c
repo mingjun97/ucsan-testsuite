@@ -1,4 +1,5 @@
 // METADATA: note.yaml
+// ENV: KO_RESIGN_PTRARGS
 // FLAG: 200 201 202 203 204
 
 

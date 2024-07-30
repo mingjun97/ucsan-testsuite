@@ -197,6 +197,8 @@ if __name__ == "__main__":
         if len(test[0]) > max_len:
             max_len = len(test[0]) // 16 * 16 + 16
         try:
+            if args.verbose > 2:
+                test.append("debug")
             perform_test(stage, *test)
             tasks.append((test[0], colored(GREEN, stage.get())))
         except Exception as e:

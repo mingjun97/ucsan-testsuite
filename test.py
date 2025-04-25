@@ -5,11 +5,20 @@ import os
 import sys
 import glob
 import argparse
-
+import shutil
 import logging
 
+def find_ko_cc():
+    clang_path = shutil.which('clang')
+    if clang_path:
+        # Test if clang is 12
+        clang_output = subprocess.run([clang_path, '--version'], capture_output=True)
+        if not clang_output.stderr.decode('utf-8').startswith('clang version 12.'):
+            clang_path = None
+    return clang_path or shutil.which('clang') or shutil.which('clang-12') or f"clang-12"
+
 common_env = {
-    "KO_CC": "clang-12", 
+    "KO_CC": find_ko_cc(),
     "KO_DONT_OPTIMIZE": "1",
     "KO_USE_THOROUPY": "1",
     # "KO_TRACE_BB": "1",
@@ -63,11 +72,16 @@ for file in glob.glob("test/*.c"):
                 else:
                     test[2].append([int(flag), 0])
     tests.append(test)
-    
-ko_lang = f"{build_folder}/bin/ko-clang -fno-discard-value-names"
+
+def find_ko_lang():
+    return shutil.which('ko-clang') or f"{build_folder}/bin/ko-clang"
+
+# TODO: Fix build in CI with libcxx
+ko_lang = f"{find_ko_lang()} {"-lstdc++" if os.environ.get('CI') else ''} -fno-discard-value-names"
 
 GREEN = "\033[32m"
 RED = "\033[31m"
+YELLOW = "\033[33m"
 RESET = "\033[0;0m"
 colored = lambda color, text: f"{color}{text}{RESET}"
 
@@ -140,6 +154,7 @@ if __name__ == "__main__":
     args.add_argument("-v", '--verbose', help="Verbose", action="count", default=0)
     args.add_argument("-s", help="Stop immediately on error", action="store_true")
     args.add_argument("-f", "--file", help="Write log to file")
+    args.add_argument("--skip", help="Skip specific tests", action="append", default=[])
     sub_parser = args.add_subparsers(title="tools")
     parser_test = sub_parser.add_parser("test", help="Run specific tests")
     parser_test.add_argument("test_name", help="The name of the test", nargs="+")
@@ -182,8 +197,9 @@ if __name__ == "__main__":
     if 'debug' in args and args.debug:
         adapter = populate_gdb
 
-    run("make -j")
-    run("make install")
+    if find_ko_lang().startswith(build_folder):
+        run("make -j")
+        run("make install")
 
     os.makedirs("ll", exist_ok=True)
     os.makedirs("binary", exist_ok=True)
@@ -191,6 +207,9 @@ if __name__ == "__main__":
     max_len = 0
     errors = 0
     for test in tests:
+        if test[0] in args.skip:
+            tasks.append((test[0], colored(YELLOW, "Skipped")))
+            continue
         stage = Proxy()
         if target and test[0] not in target:
             continue

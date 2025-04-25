@@ -142,7 +142,7 @@ if __name__ == "__main__":
     args.add_argument("-f", "--file", help="Write log to file")
     sub_parser = args.add_subparsers(title="tools")
     parser_test = sub_parser.add_parser("test", help="Run specific tests")
-    parser_test.add_argument("test_name", help="The name of the test")
+    parser_test.add_argument("test_name", help="The name of the test", nargs="+")
     parser_test.add_argument("-v", '--verbose', help="Verbose", action="count", default=0)
     parser_test.add_argument("-g", '--debug', help="Debug", action="store_true", default=False)
     
@@ -192,7 +192,7 @@ if __name__ == "__main__":
     errors = 0
     for test in tests:
         stage = Proxy()
-        if target and test[0] != target:
+        if target and test[0] not in target:
             continue
         if len(test[0]) > max_len:
             max_len = len(test[0]) // 16 * 16 + 16

@@ -1,9 +1,10 @@
 // METADATA: note.yaml
-// FLAG: 152,6
+// FLAG: 152,6 100,1
 // ENV: trace_bounds
 
 int cal(unsigned int* payload, unsigned int desired){
     char* sum = malloc(6);
+    unsigned char buffer[5];
     if(*payload == 1) {
         memmove(sum + 1, sum, 6); // OOB
     }
@@ -21,6 +22,12 @@ int cal(unsigned int* payload, unsigned int desired){
     }
     if(*payload == 6) {
         memset(sum, 0, desired); // OOB
+    }
+    if(*payload == 7) {
+        mempcpy(buffer, payload + 1, 4);
+        if (buffer[2] == 'a') {
+            exit(100); // memcpy propogate functional
+        }
     }
     return *sum;
 }

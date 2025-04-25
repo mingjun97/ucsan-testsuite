@@ -1,5 +1,5 @@
 // METADATA: note.yaml
-// ENV: KO_RESIGN_PTRARGS
+// ENV: KO_RESIGN_PTRARGS KO_TRACE_BB
 // FLAG: 200 201 202 203 204
 
 
@@ -23,7 +23,7 @@ int *return_ptr(int *a) {
   return a;
 }
 
-int* bar(int *b, int unused) {
+int* baro(int *b, int unused) {
   *b += 2;
   return b;
 }
@@ -48,15 +48,15 @@ int cal(struct node* head) {
     exit(201);
     __builtin_trap();
   }
-  if (*bar(&sum, 0) > 66) {
+  if (*baro(&sum, 0) > 66) {
     exit(202);
     __builtin_trap();
   }
-    if (sum > 1024) {
+  if (sum > 1024) {
     exit(203);
     __builtin_trap();
   }
-  bar(p_sum, 0);
+  baro(p_sum, 0);
   if (sum > 404) {
     exit(204);
     __builtin_trap();

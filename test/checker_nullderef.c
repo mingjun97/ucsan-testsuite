@@ -1,6 +1,6 @@
 // METADATA: note.yaml
 // ENV: checker_nullderef
-// FLAG: 153,2
+// FLAG: 153,3
 struct s{
     int a;
     int b;

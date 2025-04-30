@@ -77,7 +77,7 @@ def find_ko_lang():
     return shutil.which('ko-clang') or f"{build_folder}/bin/ko-clang"
 
 # TODO: Fix build in CI with libcxx
-ko_lang = f"{find_ko_lang()} {"-lstdc++" if os.environ.get('CI') else ''} -fno-discard-value-names"
+ko_lang = f"{find_ko_lang()} {'-lstdc++' if os.environ.get('CI') else ''} -fno-discard-value-names"
 
 GREEN = "\033[32m"
 RED = "\033[31m"

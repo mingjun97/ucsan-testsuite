@@ -1,5 +1,5 @@
 // METADATA: struct.yaml
-//-- FLAG: 200
+// FLAG: 200
 typedef struct {
     unsigned long long field1;
     unsigned long long field2;

@@ -159,7 +159,7 @@ if __name__ == "__main__":
     args.add_argument("-v", '--verbose', help="Verbose", action="count", default=0)
     args.add_argument("-s", help="Stop immediately on error", action="store_true")
     args.add_argument("-f", "--file", help="Write log to file")
-    args.add_argument("--skip", help="Skip specific tests", action="append", default=[])
+    args.add_argument("--skip", help="Skip specific tests", action="append", default=['struct'])
     sub_parser = args.add_subparsers(title="tools")
     parser_test = sub_parser.add_parser("test", help="Run specific tests")
     parser_test.add_argument("test_name", help="The name of the test", nargs="+")

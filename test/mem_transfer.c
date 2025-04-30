@@ -1,5 +1,5 @@
 // METADATA: note.yaml
-// FLAG: 152,6 100,1
+// FLAG: 152 100
 // ENV: trace_bounds
 
 int cal(unsigned int* payload, unsigned int desired){

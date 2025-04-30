@@ -1,5 +1,5 @@
 // METADATA: note.yaml
-// FLAG: 200,1 124,1
+// FLAG: 200 124
 
 int cal(int a, char* buf) {
     if (a > 4096 * 100) {

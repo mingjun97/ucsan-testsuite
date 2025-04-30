@@ -21,7 +21,7 @@ next:
          exit(201);
     }
     if (i == 11 && sum == 0x1e) {
-         exit(202);
+         exit(202); // should not be reached
     }
     return sum;
 }

@@ -1,5 +1,5 @@
 // METADATA: note.yaml
-// FLAG: 100 152
+// FLAG: 100 152 1
 // ENV: trace_bounds
 
 
@@ -12,6 +12,9 @@ int cal(unsigned int* payload, int size){
 
     char* sum2 = malloc(size);
     char* sum3 = malloc(size);
-    memcpy(sum2, sum3, *payload); // should be OOB
+    if (sum2 == 0 || sum3 == 0) {
+        return 0; // alloca failed
+    }
+    memcpy(sum2, sum3, *payload); // should be OOB along with segfault if checkpointer allows continue after oob detected
     return 0;
 }

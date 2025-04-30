@@ -84,7 +84,7 @@ class Proxy():
     def get(self):
         return self._value
 
-def perform_test(stage, *args):
+def perform_test(stage, *args, seed=None):
     stage.set_value("Start")
     env = os.environ.copy()
     env.update(common_env)
@@ -105,7 +105,8 @@ def perform_test(stage, *args):
         triggered = {}
         for flag in flags:
             triggered[flag[0]] = 0
-        m = UcsanManager(f'binary/{test_name}.ucsan', config=ucsan_config, terminate=False, env=options, adapter=adapter)
+        debug = True if level == logging.DEBUG else False # enable debug if logging level is DEBUG
+        m = UcsanManager(f'binary/{test_name}.ucsan', config=ucsan_config, terminate=False, env=options, adapter=adapter, seed=seed, debug=debug)
         m.run()
         for exit_status in m.exit_status:
             if exit_status > 255:
@@ -149,6 +150,11 @@ if __name__ == "__main__":
     parser_clean = sub_parser.add_parser("clean", help="Clean up the test environment")
     parser_clean.set_defaults(func=lambda: run("rm -rf ll binary", cwd=".") & os._exit(0) )
 
+    parser_run_seed = sub_parser.add_parser("run_seed", help="Run specific seed")
+    parser_run_seed.add_argument("test_name", help="The name of the test")
+    parser_run_seed.add_argument("seed", help="The seed to run")
+    parser_run_seed.add_argument("-g", '--debug', help="Use gdb adapter to debug", action="store_true", default=False)
+
     def show_test():
         print("Available tests:\n\n\t", end="")
         print("\n\t".join([test[0] for test in tests]))
@@ -164,6 +170,11 @@ if __name__ == "__main__":
 
     levels = [logging.WARNING, logging.INFO, logging.DEBUG]
     level = levels[min(args.verbose, len(levels) - 1)]  # cap to last level index
+
+    seed = None
+    if 'seed' in args:
+        seed = args.seed
+        level = logging.DEBUG # for seed, we need to see the trace
 
     logging.basicConfig(level = level ,format = '[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s')
     
@@ -199,7 +210,7 @@ if __name__ == "__main__":
         try:
             if args.verbose > 2:
                 test.append("debug")
-            perform_test(stage, *test)
+            perform_test(stage, *test, seed=seed)
             tasks.append((test[0], colored(GREEN, stage.get())))
         except Exception as e:
             logging.exception(e)

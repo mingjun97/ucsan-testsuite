@@ -68,6 +68,7 @@ ko_lang = f"{build_folder}/bin/ko-clang -fno-discard-value-names"
 
 GREEN = "\033[32m"
 RED = "\033[31m"
+ORANGE = "\033[33m"
 RESET = "\033[0;0m"
 colored = lambda color, text: f"{color}{text}{RESET}"
 
@@ -77,8 +78,10 @@ def run(cmd, cwd=build_folder, env=common_env):
     return subprocess.run(cmd, check=True, cwd=cwd, env=env)
 
 class Proxy():
-    def __init__(self, value = ""):
+    def __init__(self, value = "", color = ""):
         self._value = value
+        self.color = None
+
     def set_value(self, value):
         self._value = value
     def get(self):
@@ -133,6 +136,7 @@ def perform_test(stage, *args, seed=None):
         stage.set_value(f'Passed({message})')
     else:
         stage.set_value('Passed(Compile only)')
+        stage.color = ORANGE
 
 if __name__ == "__main__":
     target = None
@@ -211,7 +215,10 @@ if __name__ == "__main__":
             if args.verbose > 2:
                 test.append("debug")
             perform_test(stage, *test, seed=seed)
-            tasks.append((test[0], colored(GREEN, stage.get())))
+            if stage.color:
+                tasks.append((test[0], colored(stage.color, stage.get())))
+            else:
+                tasks.append((test[0], colored(GREEN, stage.get())))
         except Exception as e:
             logging.exception(e)
             errors += 1

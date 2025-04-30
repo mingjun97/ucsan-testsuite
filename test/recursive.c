@@ -1,10 +1,10 @@
 // METADATA: note.yaml
-// --FLAG: 200
+// FLAG: 125
 
 void foo(int * args) {
     if (args[0] == 0) {
         foo(args + 1);
-    } 
+    }
 }
 
 
